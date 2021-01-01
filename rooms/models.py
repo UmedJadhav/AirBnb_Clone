@@ -41,7 +41,7 @@ class HouseRule(Abstract_Item):
 class Photo(Time_stamped_Model):
     caption = models.CharField(max_length=80)
     file = models.ImageField()
-    room = models.ForeignKey(to="Room", on_delete=models.CASCADE)
+    room = models.ForeignKey(to="Room", related_name='photos' ,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.caption 
@@ -50,7 +50,7 @@ class Photo(Time_stamped_Model):
 # Create your models here.
 class Room(Time_stamped_Model):
     name = models.CharField(max_length=140)
-    host = models.ForeignKey(to=User, on_delete=models.CASCADE)  # What to do when User gets deleted
+    host = models.ForeignKey(to=User, related_name='rooms', on_delete=models.CASCADE)  # What to do when User gets deleted
     description = models.TextField()
     country = CountryField()
     city = models.CharField(max_length=80)
@@ -63,10 +63,10 @@ class Room(Time_stamped_Model):
     check_in = models.TimeField()  # From 0 - 24 hrs
     check_out = models.TimeField()
     instant_book = models.BooleanField(default=False)
-    room_type = models.ForeignKey(RoomType, on_delete=models.SET_NULL, null=True)
-    amenities = models.ManyToManyField(Amenity, blank=True)
-    facilities = models.ManyToManyField(Facility, blank=True)
-    house_rules = models.ManyToManyField(HouseRule, blank=True)
+    room_type = models.ForeignKey(RoomType, related_name='rooms', on_delete=models.SET_NULL, null=True)
+    amenities = models.ManyToManyField(Amenity, related_name='rooms', blank=True)
+    facilities = models.ManyToManyField(Facility, related_name='rooms',blank=True)
+    house_rules = models.ManyToManyField(HouseRule, related_name='rooms',blank=True)
 
     def __str__(self):
         return self.name
