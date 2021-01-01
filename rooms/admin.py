@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import mark_safe
 from .models import Room, RoomType, Facility, Amenity, HouseRule, Photo
 
 
@@ -14,9 +15,15 @@ class ItemAdmin(admin.ModelAdmin):
         return curr_row.rooms.count()
 
 
+class PhotoInline(admin.TabularInline):
+    model = Photo
+
+
 # Register your models here.
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
+
+    inlines = (PhotoInline, )
 
     fieldsets = (
         ("Basic Info", {
@@ -76,15 +83,24 @@ class RoomAdmin(admin.ModelAdmin):
         'instant_book',
         'count_amenities',
         'count_photos',
-        'ratings_avg'
-
     ]
 
     list_filter = ['instant_book', 'city', 'country']
 
-    search_fields = ('=city', '^host__username')
+    raw_id_fields = ( # Gives ability to filter when the host list gets long
+        'host',
+    )
 
-    filter_horizontal = ('amenities', 'facilities', 'house_rules')
+    search_fields = (
+        '=city', 
+        '^host__username'
+    )
+
+    filter_horizontal = (
+        'amenities', 
+        'facilities', 
+        'house_rules'
+    )
 
     def count_amenities(self,  curr_row):
         return curr_row.amenities.count()
@@ -93,16 +109,16 @@ class RoomAdmin(admin.ModelAdmin):
 
     def count_photos(self, curr_row):
         return curr_row.photos.count()
-    
-    def ratings_avg(self):
-        reviews =  self.reviews.all()
-        total_avg = 0
-        for review in reviews:
-            total_avg += review.rating_avg()
-        return round(total_avg / len(reviews),2)
-    
 
  
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        '__str__',
+        'get_thumbnail'
+    )
+
+    def get_thumbnail(self, curr_row):
+        return mark_safe(f'<img width=150px src={curr_row.file.url}/>')
+
+    get_thumbnail.short_description = 'Thumbnail'
