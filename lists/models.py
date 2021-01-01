@@ -1,3 +1,12 @@
 from django.db import models
+from core.models import Time_stamped_Model
+
 
 # Create your models here.
+class List(Time_stamped_Model):
+    name = models.CharField(max_length=80)
+    user = models.ForeignKey(to='users.User', on_delete=models.CASCADE)
+    rooms = models.ManyToManyField(to='rooms.Room', blank=True)
+
+    def __str__(self):
+        return self.name
