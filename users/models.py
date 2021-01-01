@@ -28,12 +28,11 @@ class User(AbstractUser):
     )
 
     bio = models.TextField(default="", blank=True)
-    avatar = models.ImageField(null=True, blank=True)
-    gender = models.CharField(max_length=10, null=True, choices=GENDER_CHOICES, blank=True)
-    birthdate = models.DateField(null=True)
-    language = models.CharField(choices=LANGUAGE_CHOICES, max_length=2, default=LANGUAGE_ENGLISH)
-    currency = models.CharField(choices=CURRENCY_CHOICES, max_length=2, default=AMERICAN_DOLLARS)
+    avatar = models.ImageField( blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
+    birthdate = models.DateField(blank=True, null=True)
+    language = models.CharField(choices=LANGUAGE_CHOICES, max_length=2,
+                                default=LANGUAGE_ENGLISH, blank=True)
+    currency = models.CharField(choices=CURRENCY_CHOICES, max_length=2,
+                                default=AMERICAN_DOLLARS, blank=True)
     superhost = models.BooleanField(default=False)
-    
-
-
