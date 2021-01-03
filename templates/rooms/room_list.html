@@ -8,9 +8,9 @@
 
     <div class="container mx-auto pb-10">
         
-        <div class="rounded-xl bg-gray-800  -mx-40  h-50vh mt-32 mb-24 bg-cover bg-center" style="background-image:url({% static 'img/bg.jpeg' %});"></div>
-
-        <div class="flex flex-wrap -mx-40 mb-10">
+        <div class="rounded-xl bg-gray-800 -mx-10  h-50vh mt-32 mb-10 bg-cover bg-center" style="background-image:url({% static 'img/bg.jpeg' %});"></div>
+        <h2 class='text-4xl font-semibold pb-6 mb-10 border-b border-gray-400'>Explore nearby stays<h2/>
+        <div class="flex flex-wrap -mx-10 mb-10">
             {% for room in rooms  %}
                 {% include 'mixins/room_card.html' with room=room %}
             {% endfor %}
@@ -22,8 +22,8 @@
                 </a>
             {% endif %}
 
-            <span class="mx-3 font-medium text-lg">
-                {% blocktrans with current_page=page_obj.number total_pages=page_obj.paginator.num_pages %}Page {{current_page}} of {{total_pages}}{% endblocktrans %}
+            <span class="mx-7 font-medium text-lg">
+                {% blocktrans with current_page=page_obj.number total_pages=page_obj.paginator.num_pages %} {{current_page}} of {{total_pages}}{% endblocktrans %}
             </span>
             
             {% if page_obj.has_next  %}
