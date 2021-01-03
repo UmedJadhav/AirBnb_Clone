@@ -18,6 +18,11 @@
         </a>
       </div>
       {% include "partials/nav.html" %}
+      {% block search_bar %}
+          <form method='get' action={% url 'rooms:search' %}>
+              <input name='city' placeholder='Search by City'/>
+          </form>
+      {% endblock search_bar %}
     </header>
 
     {% block content %}{% endblock %}
@@ -27,7 +32,6 @@
         const langSelect = document.getElementById("js-lang");
         const handleLangChange = () => {
             const selected = langSelect.value;
-            fetch(`{% url 'users:switch-language' %}?lang=${selected}`).then(() => window.location.reload());
         }
         langSelect.addEventListener("change", handleLangChange);
     </script>
