@@ -47,7 +47,7 @@ form {
     @apply mb-3 w-full;
     &.has_error {
       input {
-        @apply bg-red-200 border-gray-600;
+        @apply border-b border-red-400;// @apply bg-red-200 border-gray-600;
         &:focus {
           @apply border-gray-600;
         }

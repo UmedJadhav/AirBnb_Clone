@@ -6,8 +6,10 @@
         </div>
         <div class="mt-10">
             {% get_current_language as LANGUAGE_CODE %}
-            <select class="w-1/5 h-8" id="js-lang">
+            {% comment %} <select class="w-1/5 h-8" id="js-lang"> {% endcomment %}
+            <select id='js-lang' class="border border-gray-300 rounded-full text-gray-600 w-1/5 h-8 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
                 <option value="en"
+                    selected
                     {% if LANGUAGE_CODE == 'en' %}
                     selected
                     {% endif %}
