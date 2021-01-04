@@ -10,11 +10,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
-from . import forms, models, mixins
+from django.contrib.messages.views import SuccessMessageMixin 
+from . import forms, models#, mixins
 
-
-class LoginView(mixins.LoggedOutOnlyView, FormView):
+class LoginView(FormView):#mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/login.html"
     form_class = forms.LoginForm
@@ -40,8 +39,7 @@ def log_out(request):
     logout(request)
     return redirect(reverse("core:home"))
 
-
-class SignUpView(mixins.LoggedOutOnlyView, FormView):
+class SignUpView(FormView):#mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/signup.html"
     form_class = forms.SignUpForm
@@ -73,6 +71,7 @@ def complete_verification(request, key):
 
 def github_login(request):
     client_id = os.environ.get("GH_ID")
+    print(client_id)
     redirect_uri = "http://localhost:8000/users/login/github/callback"
     return redirect(
         f"https://github.com/login/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&scope=read:user"
@@ -111,6 +110,8 @@ def github_callback(request):
                 if username is not None:
                     name = profile_json.get("name")
                     email = profile_json.get("email")
+                    if email is None:
+                        raise GithubException(f"Your Github account doesn't have a public email. Check your Github settings")
                     bio = profile_json.get("bio")
                     try:
                         user = models.User.objects.get(email=email)
@@ -130,7 +131,7 @@ def github_callback(request):
                         user.set_unusable_password()
                         user.save()
                     login(request, user)
-                    messages.success(request, f"Welcome back {user.first_name}")
+                    messages.success(request, f"Welcome back {user.first_name} !")
                     return redirect(reverse("core:home"))
                 else:
                     raise GithubException("Can't get your profile")
@@ -139,3 +140,59 @@ def github_callback(request):
     except GithubException as e:
         messages.error(request, e)
         return redirect(reverse("users:login"))
+
+
+class UserProfileView(DetailView):
+    model = models.User
+    context_object_name = "user_obj" # THis was used to mitigate the problem of user object being overriden on template
+
+
+class UpdateProfileView(UpdateView):#mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
+
+    model = models.User
+    template_name = "users/update_profile.html"
+    fields = (
+        "first_name",
+        "last_name",
+        "gender",
+        "bio",
+        "birthdate",
+        "language",
+        "currency",
+    )
+    success_message = "Profile Updated"
+
+    def get_object(self, queryset=None): # This lets us circumvent the fact that our url doesnt have pk in it
+        return self.request.user
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["first_name"].widget.attrs = {"placeholder": "First name"}
+        form.fields["last_name"].widget.attrs = {"placeholder": "Last name"}
+        form.fields["bio"].widget.attrs = {"placeholder": "Bio"}
+        form.fields["birthdate"].widget.attrs = {"placeholder": "Birthdate"}
+        form.fields["first_name"].widget.attrs = {"placeholder": "First name"}
+        return form
+
+
+class UpdatePasswordView(
+    #mixins.LoggedInOnlyView,
+    #mixins.EmailLoginOnlyView,
+    SuccessMessageMixin,
+    PasswordChangeView,
+):
+
+    template_name = "users/update_password.html"
+    success_message = "Password Updated"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["old_password"].widget.attrs = {"placeholder": "Current password"}
+        form.fields["new_password1"].widget.attrs = {"placeholder": "New password"}
+        form.fields["new_password2"].widget.attrs = {
+            "placeholder": "Confirm new password"
+        }
+        return form
+
+    def get_success_url(self):
+        return self.request.user.get_absolute_url()

@@ -13,7 +13,7 @@ class UserAdmin(UserAdmin):
                 'bio',
                 'language',
                 'currency',
-                'superhost'
+                'superhost',
             ),
         }),
     )
@@ -34,7 +34,8 @@ class UserAdmin(UserAdmin):
         'is_staff',
         'is_superuser',
         'email_verified',
-        'email_secret'
+        'email_secret',
+        'login_method'
         )
     
 
