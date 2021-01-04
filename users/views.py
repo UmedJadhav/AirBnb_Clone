@@ -11,9 +11,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin 
-from . import forms, models#, mixins
+from . import forms, models, mixins
 
-class LoginView(FormView):#mixins.LoggedOutOnlyView, FormView):
+class LoginView(mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/login.html"
     form_class = forms.LoginForm
@@ -39,7 +39,7 @@ def log_out(request):
     logout(request)
     return redirect(reverse("core:home"))
 
-class SignUpView(FormView):#mixins.LoggedOutOnlyView, FormView):
+class SignUpView(mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/signup.html"
     form_class = forms.SignUpForm
@@ -147,7 +147,7 @@ class UserProfileView(DetailView):
     context_object_name = "user_obj" # THis was used to mitigate the problem of user object being overriden on template
 
 
-class UpdateProfileView(UpdateView):#mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
+class UpdateProfileView(mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
 
     model = models.User
     template_name = "users/update_profile.html"
@@ -176,8 +176,8 @@ class UpdateProfileView(UpdateView):#mixins.LoggedInOnlyView, SuccessMessageMixi
 
 
 class UpdatePasswordView(
-    #mixins.LoggedInOnlyView,
-    #mixins.EmailLoginOnlyView,
+    mixins.LoggedInOnlyView,
+    mixins.EmailLoginOnlyView,
     SuccessMessageMixin,
     PasswordChangeView,
 ):
@@ -194,5 +194,5 @@ class UpdatePasswordView(
         }
         return form
 
-    def get_success_url(self):
+    def get_success_url(self): # To avoid using  password change done view 
         return self.request.user.get_absolute_url()
