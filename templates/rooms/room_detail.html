@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load is_booked on_favs i18n %}
+{% comment %} {% load is_booked on_favs i18n %} {% endcomment %}
 
 {% block page_title %}
     {{room.name}}
@@ -24,17 +24,22 @@
                     <span class="text-gray-700 font-light">{{room.city}}</span>
                 </div>
                 <a href="{{room.host.get_absolute_url}}" class="flex flex-col items-center">
-                    {% include "mixins/user_avatar.html" with user=room.host %}
-                    <span class="mt-2 text-gray-500">{{room.host.first_name}}</span>
+                    {% include "mixins/user_avatar.html" with user=room.host  h_and_w='w-20 h-20' %}
+                    <div class='flex flex-row items-center'>
+                        <span class="mt-2 text-gray-500">{{room.host.first_name}}</span>
+                        {% if user.superhost %}
+                            <i class="fas fa-check-circle text-green-400 ml-2 mt-2"></i>
+                        {% endif %}
+                    </div>
                 </a>
             </div>
-            {% on_favs room as on_favs_boolean %}
+            {% comment %} {% on_favs room as on_favs_boolean %}
             {% if on_favs_boolean %}
-                <a class="block mb-10 w-2/6 text-teal-600 font-bold" href="{% url 'lists:toggle-room' room.pk %}?action=remove">{% trans "Remove from Favourites" %}</a>
+                <a class="block mb-10 w-2/6 text-green-600 font-bold" href="{% url 'lists:toggle-room' room.pk %}?action=remove">{% trans "Remove from Favourites" %}</a>
             {% else %}
-                <a class="block mb-10 w-2/6 text-teal-600 font-bold" href="{% url 'lists:toggle-room' room.pk %}?action=add">{% trans "Save to Favourites" %}</a>
+                <a class="block mb-10 w-2/6 text-green-600 font-bold" href="{% url 'lists:toggle-room' room.pk %}?action=add">{% trans "Save to Favourites" %}</a>
             {% endif %}
-            
+             {% endcomment %}
             <div class="flex border-section">
                 <span class="mr-5 font-light">{{room.room_type}}</span>
                 <span class="mr-5 font-light">{{room.beds}} bed{{room.beds|pluralize}}</span>
@@ -59,15 +64,20 @@
             </div>
             <div class="border-section">
                 <h4 class="font-medium text-lg mb-5">House Rules</h4>
-                {% for a in room.house_rules.all %}
-                    <li class="mb-2">{{a}}</li>
-                {% endfor %}
+                {% if room.house_rules.all.count > 0  %}
+
+                    {% for a in room.house_rules.all %}
+                        <li class="mb-2">{{a}}</li>
+                    {% endfor %}
+                {% else %}
+                    <p>Host has not specified any house rules</p>
+                {% endif %}
             </div>
             <div class="mt-10">
                 <h4 class="font-medium text-2xl mb-5">Reviews</h4>
                 <div class="flex items-center">
                     <div>
-                        <i class="fas fa-star text-teal-500"></i>
+                        <i class="fas fa-star text-green-500"></i>
                         <span class="font-bold text-xl">{{room.total_rating}}</span>
                     </div>
                     <div class="h-4 w-px bg-gray-400 mx-5"></div>
@@ -96,7 +106,7 @@
         </div>
         <div class="w-1/3">
             {% if room.host == user %}
-                <a href="{% url 'rooms:edit' room.pk %}" class="btn-link block">Edit Room</a>
+                {% comment %} <a href="{% url 'rooms:edit' room.pk %}" class="btn-link block">Edit Room</a> {% endcomment %}
             {% else %}
                 {% if not request.session.is_hosting %}
                     {% for calendar in room.get_calendars %}
@@ -107,7 +117,7 @@
                                 <span>{{day}}</span>
                             {% endfor %}
                         </div>
-                        <div class="cal-grid">
+                        {% comment %} <div class="cal-grid">
                             {% for day in calendar.get_days  %}
                                 {% is_booked room day as is_booked_bool %}
                                 {% if day.number != 0 %}
@@ -122,7 +132,7 @@
                                   <span></span>
                                 {% endif %}
                             {% endfor %}
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% endfor %}
                 {% endif %}
