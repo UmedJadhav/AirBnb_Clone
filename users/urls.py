@@ -14,5 +14,6 @@ urlpatterns = [
     path("login/github/callback/", views.github_callback, name="github-callback"),
     path("<int:pk>/", views.UserProfileView.as_view(), name="profile"),
     path("update-profile/", views.UpdateProfileView.as_view(), name="update"),
-     path("update-password/", views.UpdatePasswordView.as_view(), name="password"),
+    path("update-password/", views.UpdatePasswordView.as_view(), name="password"),
+    path("switch-hosting/", views.switch_hosting, name="switch-hosting"),
 ]
