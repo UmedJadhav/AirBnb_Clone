@@ -18,4 +18,6 @@ urlpatterns = [
         views.EditPhotoView.as_view(),
         name="edit-photo",
     ),
-  
+    path("create/", views.CreateRoomView.as_view(), name="create"),
+    path("<int:pk>/photos/add", views.AddPhotoView.as_view(), name="add-photo"),
+]
