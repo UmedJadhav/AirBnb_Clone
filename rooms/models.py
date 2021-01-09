@@ -1,9 +1,10 @@
 from django.db import models
 from django_countries.fields import CountryField
 from django.urls import reverse
+from django.utils import timezone
 from core.models import Time_stamped_Model
 from users.models import User  
-# from cal import Calendar
+from cal import Calendar
 
 
 class Abstract_Item(Time_stamped_Model):
@@ -92,20 +93,23 @@ class Room(Time_stamped_Model):
             return 0
     
     def first_photo(self):
-        photo, = self.photos.all()[:1]
-        return photo.file.url
-    
+        try:
+            photo, = self.photos.all()[:1]
+            return photo.file.url
+        except ValueError:
+            return None
+
     def get_next_four_photos(self):
         photos = self.photos.all()[1:5]
         return photos
 
-    # def get_calendars(self):
-    #     now = timezone.now()
-    #     this_year = now.year
-    #     this_month = now.month
-    #     next_month = this_month + 1
-    #     if this_month == 12:
-    #         next_month = 1
-    #     this_month_cal = Calendar(this_year, this_month)
-    #     next_month_cal = Calendar(this_year, next_month)
-    #     return [this_month_cal, next_month_cal]
+    def get_calendars(self):
+        now = timezone.now()
+        this_year = now.year
+        this_month = now.month
+        next_month = this_month + 1
+        if this_month == 12:
+            next_month = 1
+        this_month_cal = Calendar(this_year, this_month)
+        next_month_cal = Calendar(this_year, next_month)
+        return [this_month_cal, next_month_cal]
