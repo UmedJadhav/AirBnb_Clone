@@ -1,3 +1,4 @@
+from django.shortcuts import render
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -5,7 +6,7 @@ from django.views.generic import View
 from django.contrib import messages
 from django.shortcuts import render, redirect, reverse
 from rooms import models as room_models
-from reviews import forms as review_forms
+from reviews import forms as review_forms 
 from . import models
 
 
@@ -63,6 +64,4 @@ def edit_reservation(request, pk, verb):
         models.BookedDay.objects.filter(reservation=reservation).delete()
     reservation.save()
     messages.success(request, "Reservation Updated")
-    return redirect(reverse("reservations:detail", kwargs={"pk": reservation.pk}))from django.shortcuts import render
-
-# Create your views here.
+    return redirect(reverse("reservations:detail", kwargs={"pk": reservation.pk}))
