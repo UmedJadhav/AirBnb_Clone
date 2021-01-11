@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.utils import timezone
 from core.models import Time_stamped_Model
@@ -32,7 +33,10 @@ class Reservation(Time_stamped_Model):
 
     def is_finished(self):
         now = timezone.now().date()
-        return now > self.check_out
+        is_finished = now > self.check_out
+        if is_finished:
+            BookedDay.objects.filter(reservation=self).delete()
+        return is_finished
       
     is_finished.boolean = True
 
