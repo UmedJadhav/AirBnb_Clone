@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from users import mixins as user_mixins
-from . import models , forms
+from . import models, forms
 
 
 class HomeView(ListView):
@@ -99,8 +99,6 @@ class SearchView(View):
             form = forms.SearchForm()
 
         return render(request, "rooms/search.html", {"form": form})
-
-
 
 
 class RoomPhotosView(user_mixins.LoggedInOnlyView, DetailView):
