@@ -15,7 +15,7 @@
 
         <div class="flex flex-col items-start border-l border-r border-t border-b">
             <div class="font-medium border-b py-8 px-5 w-full">
-                {{reservation.check_in}} - {{reservation.check_out}} <span class="ml-5 {% if reservation.status == 'pending' %} text-orange-400 {% elif reservation.status == 'canceled' %} text-red-600 {% else %} text-teal-600 {% endif %}">{{reservation.get_status_display}}</span>
+                {{reservation.check_in}} - {{reservation.check_out}} <span class="ml-5 {% if reservation.status == 'pending' %} text-red-400 {% elif reservation.status == 'canceled' %} text-red-600 {% else %} text-green-600 font-bold {% endif %}">{{reservation.get_status_display}}</span>
             </div>
     
             <span class="text-2xl border-b p-5 mt-2 w-full">
@@ -29,7 +29,7 @@
                 </div>
                 <div class="ml-5 flex flex-col">
                     <span class="font-medium mb-px">Contact your Airbnb Host</span>
-                    <a href="{% url 'conversations:go' reservation.room.host.pk reservation.guest.pk %}" class="font-medium text-teal-500">Send a Message</a>
+                    <a href="{% url 'conversations:go' reservation.room.host.pk reservation.guest.pk %}" class="btn font-medium text-red-500">Send a Message</a>
                 </div>
             </div>
     
